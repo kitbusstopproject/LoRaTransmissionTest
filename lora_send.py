@@ -36,7 +36,7 @@ class LoraSendClass:
                     time.sleep(4)
                     self.sendDevice.cmd_lora(data)
                     time.sleep(2)
-                elif data == 'exit':
+                elif data.find('exit') >= 0:
                     sys.exit()
                 else:
                     pass
