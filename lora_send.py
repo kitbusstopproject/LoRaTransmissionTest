@@ -25,6 +25,8 @@ class LoraSendClass:
             data = input('送信データ：')
             print(data)
             self.sendDevice.cmd_lora(data)
+            if data.find('exit') >= 0:
+                sys.exit()
             while self.sendDevice.device.inWaiting() > 0:
                 line = self.sendDevice.device.readline()
                 line = line.decode('utf-8')
@@ -36,7 +38,5 @@ class LoraSendClass:
                     time.sleep(4)
                     self.sendDevice.cmd_lora(data)
                     time.sleep(2)
-                elif data.find('exit') >= 0:
-                    sys.exit()
                 else:
                     pass
