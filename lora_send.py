@@ -25,9 +25,11 @@ class LoraSendClass:
     # ES920LRデータ送信
     def lora_send(self):
         while True:
-            data = input('送信データ：')
-            print(data)
-            self.sendDevice.cmd_lora(data)
+            panid = input('送信先PANID　；')
+            addid = input('送信先アドレス；')
+            data = input('送信データ　　：')
+            print('<--SEND--' + panid + addid + data)
+            self.sendDevice.cmd_lora(panid + addid + data)
             if data.find('exit') >= 0:
                 sys.exit()
             while self.sendDevice.device.inWaiting() > 0:
