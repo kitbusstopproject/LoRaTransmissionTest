@@ -2,6 +2,7 @@
 import serial
 
 
+# LoRa設定用クラス
 class LoraSettingClass:
     def __init__(self, serial_device=''):
         try:  # インスタンス変数 serialDevice を生成

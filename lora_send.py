@@ -3,7 +3,9 @@ import time
 import sys
 
 
+# LoRa送信用クラス
 class LoraSendClass:
+    # ES920LR設定コマンド
     def __init__(self, serial_device):
         self.sendDevice = serial_device
         self.sendDevice.cmd_lora('1')
@@ -20,6 +22,7 @@ class LoraSendClass:
         time.sleep(0.1)
         self.sendDevice.cmd_lora('z')
 
+    # ES920LRデータ送信
     def lora_send(self):
         while True:
             data = input('送信データ：')
