@@ -28,12 +28,12 @@ class LoraSendClass:
             panid = input('送信先PANID　；')
             addid = input('送信先アドレス；')
             data = input('送信データ　　：')
-            print('<--SEND--' + panid + addid + data)
+            print('<-- SEND -- [' + panid + addid + data + ']')
             self.sendDevice.cmd_lora(panid + addid + data)
             if data.find('exit') >= 0:
                 sys.exit()
             while self.sendDevice.device.inWaiting() == 0:
-                time.sleep()
+                time.sleep(1)
             while self.sendDevice.device.inWaiting() > 0:
                 line = self.sendDevice.device.readline()
                 line = line.decode('utf-8')
