@@ -13,16 +13,16 @@ def main():
         print('Usage: python %s [send | recv]' % (args[0]))
         print('       [send | recv] ... mode select')
         sys.exit()
-    if args[1] != "send" and args[1] != "recv":
+    if args[1] != 'send' and args[1] != 'recv':
         print('Usage: python %s [send | recv] [on | off]' % (args[0]))
         print('       [send | recv] ... mode select')
         sys.exit()
 
-    if args[1] == "send":
+    if args[1] == 'send':
         lr_send = lora_send.LoraSendClass(lora_device)
         lr_send.lora_send()
 
-    elif args[1] == "recv":
+    elif args[1] == 'recv':
         lr_recv = lora_recv.LoraRecvClass(lora_device)
         lr_recv.lora_recv()
 

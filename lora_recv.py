@@ -31,9 +31,9 @@ class LoraRecvClass:
         while True:
             if self.sendDevice.device.inWaiting() > 0:
                 line = self.sendDevice.device.readline()
-                line = line.decode("utf-8")
+                line = line.decode('utf-8')
                 print(line)
-                if line.find("Ack Timeout") >= 0:
+                if line.find('Ack Timeout') >= 0:
                     continue
                 if line.find('exit') >= 0:
                     sys.exit()

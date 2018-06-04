@@ -45,5 +45,3 @@ class LoraSendClass:
                     time.sleep(4)
                     self.sendDevice.cmd_lora(data)
                     time.sleep(2)
-                else:
-                    pass
