@@ -3,9 +3,11 @@ import time
 import sys
 
 
-# LoRa受信用クラス
 class LoraRecvClass:
-    # ES920LR設定コマンド
+    """
+        LoRa受信用クラス
+    """
+
     def __init__(self, serial_device, set_flag, config):
         self.sendDevice = serial_device
         self.set_flag = set_flag
@@ -36,7 +38,7 @@ class LoraRecvClass:
         time.sleep(0.1)
         self.sendDevice.cmd_lora('z')
 
-    # ES920LRデータ受信
+    """ES920LRデータ受信メソッド"""
     def lora_recv(self):
         while True:
             if self.sendDevice.device.inWaiting() > 0:

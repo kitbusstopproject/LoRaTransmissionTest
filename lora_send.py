@@ -3,9 +3,11 @@ import time
 import sys
 
 
-# LoRa送信用クラス
 class LoraSendClass:
-    # ES920LR設定コマンド
+    """
+        LoRa送信用クラス
+    """
+
     def __init__(self, serial_device, set_flag, config):
         self.sendDevice = serial_device
         self.set_flag = set_flag
@@ -32,7 +34,7 @@ class LoraSendClass:
         time.sleep(0.1)
         self.sendDevice.cmd_lora('z')
 
-    # ES920LRデータ送信
+    """ES920LRデータ送信メソッド"""
     def lora_send(self):
         while True:
             panid = input('送信先PANID　；')
