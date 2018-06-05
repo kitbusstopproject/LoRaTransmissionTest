@@ -10,13 +10,15 @@ def main(argc, argv):
     lora_device = lora_setting.LoraSettingClass(lora_device_name)  # デバイス名&ボーレート設定
     set_flag = None
     config = []
-    if argc < 2:
-        print('Usage: python %s [send | recv]' % (argv[0]))
+    if argc < 3:
+        print('Usage: python %s [send | recv] [set | unset]' % (argv[0]))
         print('       [send | recv] ... mode select')
+        print('       [set | unset] ... mode select')
         sys.exit()
-    if argv[1] != 'send' and argv[1] != 'recv':
-        print('Usage: python %s [send | recv]' % (argv[0]))
+    if argv[1] != 'send' and argv[1] != 'recv' and argv[2] != 'set' and argv[2] != 'unset':
+        print('Usage: python %s [send | recv] [set | unset]' % (argv[0]))
         print('       [send | recv] ... mode select')
+        print('       [set | unset] ... mode select')
         sys.exit()
 
     if argv[2] == 'set':
