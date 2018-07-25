@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import time
-import sys
 
 
 class LoraRecvClass:
@@ -44,3 +43,12 @@ class LoraRecvClass:
                     print(e)
                     continue
                 print(line)
+                if line.find('RSSI') >= 0 and line.find('information') == -1:
+                    log = line
+                    log_list = log.split('):Receive Data(')
+                    rssi = log_list[0][5:]
+                    data = log_list[1].replace(")", "").strip()
+                    num = log_list[1][0:3]
+                    print(num + ',' + rssi + ',' + data)
+                    with open('recv_log.csv', 'a') as f:
+                        f.write(num + ',' + rssi + ',' + data + '\n')
