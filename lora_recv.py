@@ -48,7 +48,7 @@ class LoraRecvClass:
                     log_list = log.split('):Receive Data(')
                     rssi = log_list[0][5:]
                     data = log_list[1].replace(")", "").strip()
-                    num = log_list[1][0:3]
+                    num = log_list[1][-7:-3]
                     print(num + ',' + rssi + ',' + data)
                     with open('recv_log.csv', 'a') as f:
                         f.write(num + ',' + rssi + ',' + data + '\n')
