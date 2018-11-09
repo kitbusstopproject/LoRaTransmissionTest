@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import time
 import sys
+import lora_setting
 import string
 import random
 
@@ -10,8 +11,8 @@ class LoraSendClass:
         LoRa送信用クラス
     """
 
-    def __init__(self, serial_device, channel):
-        self.sendDevice = serial_device
+    def __init__(self, lora_device, channel):
+        self.sendDevice = lora_setting.LoraSettingClass(lora_device)
         self.channel = channel
         self.sendDevice.cmd_lora('1')
         time.sleep(0.1)

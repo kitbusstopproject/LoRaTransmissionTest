@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 import time
+import lora_setting
 
 
+# LoRa受信用クラス
 class LoraRecvClass:
-    """
-        LoRa受信用クラス
-    """
 
-    def __init__(self, serial_device, channel):
-        self.sendDevice = serial_device
+    def __init__(self, lora_device, channel):
+        self.sendDevice = lora_setting.LoraSettingClass(lora_device)
         self.channel = channel
         self.sendDevice.cmd_lora('1')
         time.sleep(0.1)

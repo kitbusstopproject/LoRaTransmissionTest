@@ -2,12 +2,10 @@ import sys
 
 import lora_send
 import lora_recv
-import lora_setting
 
 
 def main(argc, argv):
-    lora_device_name = "/dev/ttyS0"  # ES920LRデバイス名
-    lora_device = lora_setting.LoraSettingClass(lora_device_name)  # デバイス名&ボーレート設定
+    lora_device = "/dev/ttyS0"  # ES920LRデバイス名
     if argc < 2:
         print('Usage: python %s [send | recv]' % (argv[0]))
         print('       [send | recv] ... mode select')
