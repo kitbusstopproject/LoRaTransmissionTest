@@ -24,6 +24,7 @@ class LoraSettingClass:
         self.cmd = '{0}\r\n'.format(cmd)
         self.device.write(self.cmd.encode())
 
+    # LoRaリセット
     def reset_lora(self):
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(self.reset_pin, GPIO.OUT)
