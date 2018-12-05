@@ -1,51 +1,64 @@
 # -*- coding: utf-8 -*-
 import time
-import sys
+import lora_setting
 
 
+# LoRa受信用クラス
 class LoraRecvClass:
-    """
-        LoRa受信用クラス
-    """
 
-    def __init__(self, serial_device, set_flag, config):
-        self.sendDevice = serial_device
-        self.set_flag = set_flag
-        self.config = config
-        self.sendDevice.cmd_lora('1')
-        time.sleep(0.1)
-        self.sendDevice.cmd_lora('a')
-        time.sleep(0.1)
-        self.sendDevice.cmd_lora('1')
-        time.sleep(0.1)
-        if self.set_flag == 'on':
-            command = ['b', 'c', 'd', 'e', 'f', 'g']
-            for cmd, conf in zip(command, self.config):
-                self.sendDevice.cmd_lora(cmd)
-                time.sleep(0.1)
-                self.sendDevice.cmd_lora(conf)
-                time.sleep(0.1)
-        else:
-            self.sendDevice.cmd_lora('d')
-            time.sleep(0.1)
-            self.sendDevice.cmd_lora('14')
-            time.sleep(0.1)
-            self.sendDevice.cmd_lora('g')
-            time.sleep(0.1)
-            self.sendDevice.cmd_lora('0001')
-            time.sleep(0.1)
-        self.sendDevice.cmd_lora('y')
-        time.sleep(0.1)
-        self.sendDevice.cmd_lora('z')
+    def __init__(self, lora_device, channel):
+        self.recvDevice = lora_setting.LoraSettingClass(lora_device)
+        self.channel = channel
 
-    """ES920LRデータ受信メソッド"""
+    # ES920LRデータ受信メソッド
     def lora_recv(self):
-        while True:
-            if self.sendDevice.device.inWaiting() > 0:
-                line = self.sendDevice.device.readline()
-                line = line.decode('utf-8')
+        # LoRa初期化
+        self.recvDevice.reset_lora()
+        # LoRa(ES9320LR)起動待機
+        while self.recvDevice.device.inWaiting() > 0:
+            try:
+                line = self.recvDevice.device.readline()
+                if line.find(b'Select'):
+                    line = line.decode("utf-8")
+                    print(line)
+            except Exception as e:
+                print(e)
+                continue
+        # LoRa(ES920LR)設定
+        set_mode = ['1', 'd', self.channel, 'e', '0001', 'f', '0002', 'g', '0001',
+                    'n', '2', 'l', '2', 'p', '1', 'y', 'z']
+        # LoRa(ES920LR)コマンド入力
+        for cmd in set_mode:
+            self.recvDevice.cmd_lora(cmd)
+            time.sleep(0.1)
+        while self.recvDevice.device.inWaiting() > 0:
+            try:
+                line = self.recvDevice.device.readline()
+                line = line.decode("utf-8")
                 print(line)
-                if line.find('Ack Timeout') >= 0:
-                    continue
-                if line.find('exit') >= 0:
-                    sys.exit()
+            except Exception as e:
+                print(e)
+                continue
+        # LoRa(ES920LR)受信待機
+        while True:
+            try:
+                # ES920LRモジュールから値を取得
+                if self.recvDevice.device.inWaiting() > 0:
+                    try:
+                        line = self.recvDevice.device.readline()
+                        line = line.decode("utf-8")
+                    except Exception as e:
+                        print(e)
+                        continue
+                    print(line)
+                    if line.find('RSSI') >= 0 and line.find('information') == -1:
+                        log = line
+                        log_list = log.split('):Receive Data(')
+                        # 受信電波強度
+                        rssi = log_list[0][5:]
+                        print(rssi)
+                        # 受信フレーム
+                        data = log_list[1][:-3]
+                        print(data)
+            except KeyboardInterrupt:
+                self.recvDevice.close()

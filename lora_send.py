@@ -1,59 +1,50 @@
 # -*- coding: utf-8 -*-
 import time
-import sys
+import lora_setting
 
 
+# LoRa送信用クラス
 class LoraSendClass:
-    """
-        LoRa送信用クラス
-    """
 
-    def __init__(self, serial_device, set_flag, config):
-        self.sendDevice = serial_device
-        self.set_flag = set_flag
-        self.config = config
-        self.sendDevice.cmd_lora('1')
-        time.sleep(0.1)
-        if self.set_flag == 'on':
-            command = ['b', 'c', 'd', 'e', 'f', 'g']
-            for cmd, conf in zip(command, self.config):
-                self.sendDevice.cmd_lora(cmd)
-                time.sleep(0.1)
-                self.sendDevice.cmd_lora(conf)
-                time.sleep(0.1)
-        else:
-            self.sendDevice.cmd_lora('d')
-            time.sleep(0.1)
-            self.sendDevice.cmd_lora('14')
-            time.sleep(0.1)
-            self.sendDevice.cmd_lora('g')
-            time.sleep(0.1)
-            self.sendDevice.cmd_lora('0001')
-            time.sleep(0.1)
-        self.sendDevice.cmd_lora('y')
-        time.sleep(0.1)
-        self.sendDevice.cmd_lora('z')
+    def __init__(self, lora_device, channel):
+        self.sendDevice = lora_setting.LoraSettingClass(lora_device)
+        self.channel = channel
 
-    """ES920LRデータ送信メソッド"""
+    # ES920LRデータ送信メソッド
     def lora_send(self):
-        while True:
-            panid = input('送信先PANID　；')
-            addid = input('送信先アドレス；')
-            data = input('送信データ　　：')
-            print('<-- SEND -- [' + panid + addid + data + ']')
-            self.sendDevice.cmd_lora(panid + addid + data)
-            if data.find('exit') >= 0:
-                sys.exit()
-            while self.sendDevice.device.inWaiting() == 0:
-                time.sleep(1)
-            while self.sendDevice.device.inWaiting() > 0:
+        # LoRa初期化
+        self.sendDevice.reset_lora()
+        # LoRa(ES9320LR)起動待機
+        while self.sendDevice.device.inWaiting() > 0:
+            try:
                 line = self.sendDevice.device.readline()
-                line = line.decode('utf-8')
+                if line.find(b'Select'):
+                    line = line.decode("utf-8")
+                    print(line)
+            except Exception as e:
+                print(e)
+                continue
+        # LoRa(ES920LR)設定
+        set_mode = ['1', 'd', self.channel, 'e', '0001', 'f', '0001', 'g', '0002',
+                    'l', '2', 'n', '2', 'p', '1', 'y', 'z']
+        # LoRa(ES920LR)設定コマンド入力
+        for cmd in set_mode:
+            self.sendDevice.cmd_lora(cmd)
+            time.sleep(0.1)
+        while self.sendDevice.device.inWaiting() > 0:
+            try:
+                line = self.sendDevice.device.readline()
+                line = line.decode("utf-8")
                 print(line)
-                if line.find('Ack Timeout') >= 0:
-                    self.sendDevice.cmd_lora(data)
-                    time.sleep(2)
-                elif line.find('send data failed') >= 0:
-                    time.sleep(4)
-                    self.sendDevice.cmd_lora(data)
-                    time.sleep(2)
+            except Exception as e:
+                print(e)
+                continue
+        # LoRa(ES920LR)データ送信
+        while True:
+            try:
+                data = 'aaaa'
+                print('<-- SEND -- [00010002 {} ]'.format(data))
+                self.sendDevice.cmd_lora('00010002{}'.format(data))
+            except KeyboardInterrupt:
+                self.sendDevice.close()
+            time.sleep(5)
