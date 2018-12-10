@@ -16,11 +16,14 @@ def main(argc, argv):
         print('       [send | recv] ... mode select')
         sys.exit()
 
+    # チャンネル番号を入力
     channel = input('channel:')
 
+    # 送信側の場合
     if argv[1] == 'send':
         lr_send = lora_send.LoraSendClass(lora_device, channel)
         lr_send.lora_send()
+    # 受信側の場合
     elif argv[1] == 'recv':
         lr_recv = lora_recv.LoraRecvClass(lora_device, channel)
         lr_recv.lora_recv()

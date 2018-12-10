@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import time
 import lora_setting
 
 
@@ -14,31 +13,11 @@ class LoraRecvClass:
     def lora_recv(self):
         # LoRa初期化
         self.recvDevice.reset_lora()
-        # LoRa(ES9320LR)起動待機
-        while self.recvDevice.device.inWaiting() > 0:
-            try:
-                line = self.recvDevice.device.readline()
-                if line.find(b'Select'):
-                    line = line.decode("utf-8")
-                    print(line)
-            except Exception as e:
-                print(e)
-                continue
-        # LoRa(ES920LR)設定
+        # LoRa設定コマンド
         set_mode = ['1', 'd', self.channel, 'e', '0001', 'f', '0002', 'g', '0001',
                     'n', '2', 'l', '2', 'p', '1', 'y', 'z']
-        # LoRa(ES920LR)コマンド入力
-        for cmd in set_mode:
-            self.recvDevice.cmd_lora(cmd)
-            time.sleep(0.1)
-        while self.recvDevice.device.inWaiting() > 0:
-            try:
-                line = self.recvDevice.device.readline()
-                line = line.decode("utf-8")
-                print(line)
-            except Exception as e:
-                print(e)
-                continue
+        # LoRa設定
+        self.recvDevice.setup_lora(set_mode)
         # LoRa(ES920LR)受信待機
         while True:
             try:
